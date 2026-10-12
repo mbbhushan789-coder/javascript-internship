@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript Internship - Assignments & Mini Project</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    button { margin: 4px; padding: 8px 14px; cursor: pointer; }
+    pre { background: #111; color: #0f0; padding: 1rem; border-radius: 6px; min-height: 200px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>JavaScript Internship</h1>
+  <p>Click a button to run it. Output appears below (and in the browser console, F12).</p>
+  <div>
+    <button data-file="assignments/assignment1.js">Assignment 1</button>
+    <button data-file="assignments/assignment2.js">Assignment 2</button>
+    <button data-file="assignments/assignment3.js">Assignment 3</button>
+    <button data-file="assignments/assignment4.js">Assignment 4</button>
+    <button data-file="assignments/assignment5.js">Assignment 5</button>
+    <button data-file="assignments/assignment6.js">Assignment 6</button>
+    <button data-file="project/script.js">Mini Project</button>
+  </div>
+  <h2>Output</h2>
+  <pre id="output"></pre>
+
+  <script>
+    const out = document.getElementById("output");
+    const originalLog = console.log;
+    console.log = (...args) => {
+      originalLog(...args);
+      out.textContent += args.map(a => typeof a === "object" ? JSON.stringify(a) : a).join(" ") + "\n";
+    };
+
+    document.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        out.textContent = "";
+        const code = await (await fetch(btn.dataset.file)).text();
+        // run inside a function so each file has its own scope
+        try { new Function(code)(); } catch (e) { console.log("Error: " + e.message); }
+      });
+    });
+  </script>
+</body>
+</html>
